@@ -66,7 +66,7 @@ class StoreAValue(webapp2.RequestHandler):
 
 class StoreATestValue(webapp2.RequestHandler):
 
-  def store_a_value(self, tag, value):
+  def store_a_test_value(self, tag, value):
   	store(tag, value)
 	# call trimdb if you want to limit the size of db
   	# trimdb()
@@ -87,10 +87,9 @@ class StoreATestValue(webapp2.RequestHandler):
 	
 
   def post(self):
-	tmp = str(random.randrange(0,9999999999999999999999))
-	tag = tmp
-	value = tmp
-	self.store_a_value(tag, value)
+	tag = str(random.randrange(0,9999999999999999999999))
+	value = str(random.randrange(0,9999999999999999999999))
+	self.store_a_test_value(tag, value)
 
 class DeleteEntry(webapp2.RequestHandler):
 
@@ -239,11 +238,10 @@ def DeleteUrl(sUrl):
 
 ### Assign the classes to the URL's
 
-app = webapp2.WSGIApplication ([('/', MainPage),
-                           ('/getvalue', GetValueHandler),
+app = webapp2.WSGIApplication ([('/', MainPage), ('/getvalue', GetValueHandler),
 			   ('/storeavalue', StoreAValue),
-		           ('/deleteentry', DeleteEntry),
-                            '/test', StoreATestValue)
+		       ('/deleteentry', DeleteEntry),
+               ('/test', StoreATestValue)
                            ])
 
 
