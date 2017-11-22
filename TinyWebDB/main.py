@@ -80,15 +80,14 @@ class StoreATestValue(webapp2.RequestHandler):
 	## rather than json.dump.  That didn't work: the component ended up
 	## seeing extra quotation marks.  Maybe someone can explain this to me.
 	
-	if self.request.get('fmt') == "html":
-		WriteToWeb(self,tag,value)
-	else:
-		WriteToPhoneAfterStore(self,tag,value)
+	WriteToWeb2(self,tag,value)
+
 	
 
-  def post(self):
-	tag = str(random.randrange(0,9999999999999999999999))
-	value = str(random.randrange(0,9999999999999999999999))
+  def get(self):
+	tmp = str(random.randrange(0,9999999999999999999999))
+	tag = tmp
+	value = tmp
 	self.store_a_test_value(tag, value)
 
 class DeleteEntry(webapp2.RequestHandler):
@@ -149,6 +148,12 @@ def WriteToPhone(handler,tag,value):
 
 def WriteToWeb(handler, tag,value):
     entries = db.GqlQuery("SELECT * FROM StoredData ORDER BY date desc")
+    template_values={"result":  value,"entryList":entries}  
+    path = os.path.join(os.path.dirname(__file__),'index.html')
+    handler.response.out.write(template.render(path,template_values))
+
+def WriteToWeb2(handler, tag,value):
+    entries = ""
     template_values={"result":  value,"entryList":entries}  
     path = os.path.join(os.path.dirname(__file__),'index.html')
     handler.response.out.write(template.render(path,template_values))
