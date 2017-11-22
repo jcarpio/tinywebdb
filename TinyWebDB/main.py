@@ -9,6 +9,8 @@
 ### Note-- updated for use with Python2.7 in App Engine, June 2013
 ### Note-- updated for use with Django 1.11 in App Engine, September 2017
 
+import random
+
 import webapp2
 
 import logging
@@ -60,6 +62,34 @@ class StoreAValue(webapp2.RequestHandler):
   def post(self):
 	tag = self.request.get('tag')
 	value = self.request.get('value')
+	self.store_a_value(tag, value)
+
+class StoreATestValue(webapp2.RequestHandler):
+
+  def store_a_value(self, tag, value):
+  	store(tag, value)
+	# call trimdb if you want to limit the size of db
+  	# trimdb()
+	
+	## Send back a confirmation message.  The TinyWebDB component ignores
+	## the message (other than to note that it was received), but other
+	## components might use this.
+	result = ["STORED", tag, value]
+	
+	## When I first implemented this, I used  json.JSONEncoder().encode(value)
+	## rather than json.dump.  That didn't work: the component ended up
+	## seeing extra quotation marks.  Maybe someone can explain this to me.
+	
+	if self.request.get('fmt') == "html":
+		WriteToWeb(self,tag,value)
+	else:
+		WriteToPhoneAfterStore(self,tag,value)
+	
+
+  def post(self):
+	tmp = str(random.randrange(0,9999999999999999999999))
+	tag = tmp
+	value = tmp
 	self.store_a_value(tag, value)
 
 class DeleteEntry(webapp2.RequestHandler):
@@ -212,8 +242,8 @@ def DeleteUrl(sUrl):
 app = webapp2.WSGIApplication ([('/', MainPage),
                            ('/getvalue', GetValueHandler),
 			   ('/storeavalue', StoreAValue),
-		           ('/deleteentry', DeleteEntry)
-
+		           ('/deleteentry', DeleteEntry),
+                            '/test', StoreATestValue)
                            ])
 
 
