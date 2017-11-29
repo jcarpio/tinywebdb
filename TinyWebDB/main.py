@@ -133,7 +133,8 @@ class GetValueHandler(webapp2.RequestHandler):
 class MainPage(webapp2.RequestHandler):
 
   def get(self):
-    entries = db.GqlQuery("SELECT * FROM StoredData ORDER BY date desc")
+    # entries = db.GqlQuery("SELECT * FROM StoredData ORDER BY date desc LIMIT 5")
+    entries = db.GqlQuery("SELECT * FROM StoredData LIMIT 5")
     template_values = {"entryList":entries}
     # render the page using the template engine
     path = os.path.join(os.path.dirname(__file__),'index.html')
